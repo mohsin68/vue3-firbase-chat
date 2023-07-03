@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Auth from '../views/Auth.vue';
+import Chat from '../views/Chat.vue';
 
 const routes = [
   {
@@ -7,6 +8,11 @@ const routes = [
     name: 'Auth',
     component: Auth
   },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: Chat
+  }
 ];
 
 const router = createRouter({

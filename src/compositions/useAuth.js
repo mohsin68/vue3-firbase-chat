@@ -1,3 +1,4 @@
+import router from '@/router';
 import { auth, provider } from '../firebase';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { ref, computed, onUnmounted } from 'vue';
@@ -21,6 +22,8 @@ export default () => {
   const signIn = async () => {
     try {
       await signInWithPopup(auth, provider);
+      router.push('/chat');
+
     } catch (error) {
       console.log(error.message);
     }
@@ -29,6 +32,7 @@ export default () => {
   const signOutUser = async () => {
     try {
       await signOut(auth);
+      router.push('/');
     } catch (error) {
       console.log(error.message);
     }
@@ -39,6 +43,7 @@ export default () => {
     if (userData) {
       const parsedData = JSON.parse(userData);
       user.value = parsedData;
+      router.push('/chat');
     }
   };
 
