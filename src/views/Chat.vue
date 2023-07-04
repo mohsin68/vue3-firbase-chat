@@ -9,15 +9,28 @@
             <svg-icon type="mdi" :path="searchIcon"></svg-icon>
           </template>
         </text-input>
+        <div class="contacts-wrapper h-[calc(100%-3rem)] overflow-y-auto mt-4">
+          <contact-card
+            v-for="i in 10"
+            :key="i"
+            :contact="{
+              name: 'John Doe',
+              lastMessage:
+                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+              lastMessageTime: '10:00 ',
+            }"
+          />
+        </div>
       </div>
       <div
-        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl"
+        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-, ContactCardr-xl"
       ></div>
     </div>
   </div>
 </template>
 
 <script setup>
+import ContactCard from "@/components/ContactCard.vue";
 import TextInput from "@/components/TextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify } from "@mdi/js";
