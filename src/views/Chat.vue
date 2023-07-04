@@ -2,14 +2,16 @@
   <div class="chat-page h-full flex justify-center items-center">
     <div class="chat-wrapper flex w-2/3 h-[500px]">
       <div
-        class="chat-sidebar w-1/3 bg-dark bg-opacity-80 backdrop-blur-sm rounded-l-xl px-6 py-4"
+        class="chat-sidebar w-1/3 bg-dark bg-opacity-80 backdrop-blur-sm rounded-l-xl overflow-hidden"
       >
-        <text-input v-model="search" placeholder="search">
-          <template #prependIcon>
-            <svg-icon type="mdi" :path="searchIcon"></svg-icon>
-          </template>
-        </text-input>
-        <div class="contacts-wrapper h-[calc(100%-3rem)] overflow-y-auto mt-4">
+        <div class="search-wrapper p-4">
+          <text-input v-model="search" placeholder="search">
+            <template #prependIcon>
+              <svg-icon type="mdi" :path="searchIcon"></svg-icon>
+            </template>
+          </text-input>
+        </div>
+        <div class="contacts-wrapper h-[calc(100%-4rem)] overflow-y-auto px-4">
           <contact-card
             v-for="i in 10"
             :key="i"
@@ -23,8 +25,14 @@
         </div>
       </div>
       <div
-        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-, ContactCardr-xl"
-      ></div>
+        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl relative"
+      >
+        <h4
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
+        >
+          Please select a contact to start a chat
+        </h4>
+      </div>
     </div>
   </div>
 </template>
