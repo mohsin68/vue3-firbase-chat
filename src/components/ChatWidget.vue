@@ -1,11 +1,7 @@
 <template>
   <div class="chat-widget h-full">
     <header class="flex items-center gap-2 border-b border-gray-400 pb-3">
-      <img
-        class="w-12 h-12 rounded-full object-cover"
-        :src="require(`@/assets/images/person.jpg`)"
-        alt=""
-      />
+      <avatar />
       <h5>John Doe</h5>
     </header>
 
@@ -28,6 +24,7 @@
 
 <script setup>
 import TextInput from "@/components/TextInput.vue";
+import Avatar from "@/components/Avatar.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMessageText, mdiSend } from "@mdi/js";
 import { ref } from "vue";

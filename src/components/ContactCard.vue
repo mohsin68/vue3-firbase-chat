@@ -2,14 +2,8 @@
   <div
     class="contact-card flex gap-2 mb-4 items-center cursor-pointer hover:bg-dark hover:bg-opacity-20 rounded-md transition p-2"
   >
-    <div
-      class="contact-card__avatar w-12 h-12 object-cover rounded-full overflow-hidden"
-    >
-      <img
-        class="w-full h-full rounded-full"
-        :src="require(`@/assets/images/person.jpg`)"
-        alt="avatar"
-      />
+    <div class="contact-card__avatar">
+      <avatar />
     </div>
     <div
       class="contact-card__info w-full max-w-[calc(100%-3.5rem)] flex justify-between"
@@ -32,6 +26,7 @@
 </template>
 
 <script setup>
+import Avatar from "@/components/Avatar.vue";
 import { defineProps } from "vue";
 const props = defineProps({
   contact: {
