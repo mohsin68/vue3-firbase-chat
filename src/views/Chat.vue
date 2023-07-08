@@ -1,6 +1,6 @@
 <template>
   <div class="chat-page h-full flex justify-center items-center">
-    <div class="chat-wrapper flex w-2/3 h-[500px]">
+    <div class="chat-wrapper flex w-2/3 h-[600px]">
       <div
         class="chat-sidebar w-1/3 bg-dark bg-opacity-80 backdrop-blur-sm rounded-l-xl overflow-hidden"
       >
@@ -25,19 +25,21 @@
         </div>
       </div>
       <div
-        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl relative"
+        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl relative px-8 py-4"
       >
-        <h4
+        <!-- <h4
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
         >
           Please select a contact to start a chat
-        </h4>
+        </h4> -->
+        <chat-widget />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import ChatWidget from "@/components/ChatWidget.vue";
 import ContactCard from "@/components/ContactCard.vue";
 import TextInput from "@/components/TextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
