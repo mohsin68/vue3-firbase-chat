@@ -25,6 +25,7 @@
 <script setup>
 import TextInput from "@/components/TextInput.vue";
 import Avatar from "@/components/Avatar.vue";
+import Message from "@/components/Message.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMessageText, mdiSend } from "@mdi/js";
 import { ref } from "vue";
