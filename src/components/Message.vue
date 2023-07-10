@@ -1,28 +1,43 @@
 <template>
-  <div class="message flex flex-row-reverse gap-2">
+  <div
+    class="message flex gap-2 mb-2"
+    :class="sender ? 'flex-row-reverse' : 'flex-row'"
+  >
     <div class="message__avatar">
-      <avatar />
+      <avatar :src="message.userPhotoURL" />
     </div>
     <div
-      class="message__content w-3/4 bg-primary text-black px-4 py-2 rounded-xl rounded-tr-none mt-2"
+      class="message__content w-max max-w-[75%] px-4 py-2 rounded-xl mt-2"
+      :class="
+        sender
+          ? 'bg-primary text-black rounded-tr-none'
+          : ' bg-dark bg-opacity-50 text-muted rounded-tl-none'
+      "
     >
       <div class="message__content__text">
-        I think we can meeet tommorow and discuss about the project.
+        {{ message.text }}
       </div>
-      <div class="message__content__time text-xs text-gray-600 text-right">
+      <!-- <div
+        class="message__content__time text-xs text-right"
+        :class="sender ? 'text-black' : 'text-white'"
+      >
         12:00 PM
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script setup>
 import Avatar from "@/components/Avatar.vue";
-import { defineProps } from "vue";
+import { defineProps, computed } from "vue";
 const props = defineProps({
   message: {
     type: Object,
     default: () => ({}),
+  },
+  sender: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

@@ -1,9 +1,13 @@
 import router from '@/router';
-import { auth, provider } from '../firebase';
+import { auth, provider , db } from '../firebase';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { ref, computed, onUnmounted } from 'vue';
+import { collection, addDoc, query } from 'firebase/firestore';
+
 
 const LOCAL_STORAGE_KEY = 'chatAppUser';
+const users = collection(db, "users");
+const usersQuery = query(users);
 
 export default () => {
   const user = ref(null);
@@ -23,6 +27,13 @@ export default () => {
     try {
       await signInWithPopup(auth, provider);
       router.push('/chat');
+
+      // add user to firestore
+      await addDoc(usersQuery, {
+        userName: user.value.displayName,
+        userId: user.value.uid,
+        userPhotoURL: user.value.photoURL,
+      });
 
     } catch (error) {
       console.log(error.message);

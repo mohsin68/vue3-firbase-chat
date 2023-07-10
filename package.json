@@ -11,6 +11,7 @@
     "@mdi/js": "^7.2.96",
     "core-js": "^3.8.3",
     "firebase": "^9.23.0",
+    "firebase-admin": "^11.9.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },

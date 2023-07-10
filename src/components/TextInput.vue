@@ -4,7 +4,7 @@
   >
     <slot name="prependIcon"></slot>
     <input
-      v-model="modelValue"
+      :value="modelValue"
       type="text"
       class="w-full bg-transparent focus:outline-none mx-2"
       :placeholder="placeholder"
@@ -20,6 +20,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: "Search",
+  },
+  modelValue: {
+    type: String,
+    default: "",
   },
 });
 </script>

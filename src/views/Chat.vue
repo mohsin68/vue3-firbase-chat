@@ -44,9 +44,24 @@ import ContactCard from "@/components/ContactCard.vue";
 import TextInput from "@/components/TextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify } from "@mdi/js";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
+import { db } from "@/firebase";
+import { collection, query, orderBy, getDocs } from "firebase/firestore";
 const search = ref("");
 const searchIcon = mdiMagnify;
+
+const contacts = reactive([]);
+const currentUser = JSON.parse(localStorage.getItem("chatAppUser")).uid;
+const getUsers = async () => {
+  const q = query(collection(db, "users"));
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    const recipient = doc.data();
+    if (recipient.userId !== currentUser) contacts.push(recipient);
+  });
+};
+getUsers();
 </script>
 
 <style lang="scss">

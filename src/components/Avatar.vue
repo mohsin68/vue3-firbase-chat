@@ -1,9 +1,5 @@
 <template>
-  <img
-    class="w-12 h-12 rounded-full object-cover"
-    :src="require(`@/assets/images/person.jpg`)"
-    alt=""
-  />
+  <img class="w-12 h-12 rounded-full object-cover" :src="src" alt="" />
 </template>
 
 <script setup>
