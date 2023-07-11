@@ -12,27 +12,43 @@
           </text-input>
         </div>
         <div class="contacts-wrapper h-[calc(100%-4rem)] overflow-y-auto px-4">
-          <contact-card
-            v-for="i in 10"
-            :key="i"
-            :contact="{
-              name: 'John Doe',
-              lastMessage:
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-              lastMessageTime: '10:00 ',
-            }"
-          />
+          <div class="conversations" v-if="convs.length">
+            <span class="text-primary"> conversations </span>
+            <contact-card
+              v-for="conversation in convs"
+              :key="conversation.id"
+              :contact="conversation.contact"
+              :active="conversation.id == activeConversationId"
+              @click="setActiveConversationId(conversation.id)"
+            />
+          </div>
+
+          <div class="contacts">
+            <span class="text-primary"> contacts </span>
+
+            <contact-card
+              v-for="contact in contacts"
+              :key="contact.userId"
+              :contact="contact"
+              @click="setReceiver(contact)"
+            />
+          </div>
         </div>
       </div>
       <div
         class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl relative px-8 py-4"
       >
-        <!-- <h4
+        <chat-widget
+          v-if="activeConversationId || receiver"
+          :conversationId="activeConversationId"
+          :receiver="receiver"
+        />
+        <h4
+          v-else
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
         >
-          Please select a contact to start a chat
-        </h4> -->
-        <chat-widget />
+          Please select a contact or conversation to start a chat
+        </h4>
       </div>
     </div>
   </div>
@@ -44,24 +60,35 @@ import ContactCard from "@/components/ContactCard.vue";
 import TextInput from "@/components/TextInput.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMagnify } from "@mdi/js";
-import { ref, reactive } from "vue";
-import { db } from "@/firebase";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { ref, computed } from "vue";
+import useContacts from "@/compositions/useContacts";
+import useChat from "@/compositions/useChat";
+const { contacts } = useContacts();
+const {
+  conversations,
+  activeConversationId,
+  setActiveConversationId,
+  receiver,
+  setReceiver,
+} = useChat();
 const search = ref("");
 const searchIcon = mdiMagnify;
 
-const contacts = reactive([]);
-const currentUser = JSON.parse(localStorage.getItem("chatAppUser")).uid;
-const getUsers = async () => {
-  const q = query(collection(db, "users"));
-  const querySnapshot = await getDocs(q);
-
-  querySnapshot.forEach((doc) => {
-    const recipient = doc.data();
-    if (recipient.userId !== currentUser) contacts.push(recipient);
+const convs = computed(() => {
+  return conversations.value.map((conv) => {
+    const membres = [conv.member1, conv.member2];
+    console.log(membres);
+    const contact = membres.find(
+      (member) =>
+        member.userId != JSON.parse(localStorage.getItem("chatAppUser")).uid
+    );
+    console.log(contact);
+    return {
+      ...conv,
+      contact,
+    };
   });
-};
-getUsers();
+});
 </script>
 
 <style lang="scss">

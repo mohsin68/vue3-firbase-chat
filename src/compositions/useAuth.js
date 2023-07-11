@@ -1,8 +1,9 @@
 import router from '@/router';
-import { auth, provider , db } from '../firebase';
+import { auth, provider, db } from '../firebase';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { ref, computed, onUnmounted } from 'vue';
 import { collection, addDoc, query } from 'firebase/firestore';
+import useContacts from './useContacts';
 
 
 const LOCAL_STORAGE_KEY = 'chatAppUser';
@@ -11,6 +12,8 @@ const usersQuery = query(users);
 
 export default () => {
   const user = ref(null);
+  const { allUsers } = useContacts();
+
   const unsubscribe = onAuthStateChanged(auth, (_user) => {
     user.value = _user;
     if (_user) {
@@ -24,9 +27,11 @@ export default () => {
   const isLogin = computed(() => user.value !== null);
 
   const signIn = async () => {
+
     try {
       await signInWithPopup(auth, provider);
       router.push('/chat');
+      if (allUsers.some(user => user.userId === user.value.uid)) return;
 
       // add user to firestore
       await addDoc(usersQuery, {

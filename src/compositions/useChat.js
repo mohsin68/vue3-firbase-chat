@@ -1,32 +1,88 @@
 import { db } from "@/firebase";
 import useAuth from "./useAuth";
-import {ref , onUnmounted} from "vue";
-import { collection, addDoc, serverTimestamp, orderBy, query, onSnapshot } from "firebase/firestore";
+import { ref, onUnmounted } from "vue";
+import { collection, addDoc, serverTimestamp, orderBy, query, onSnapshot, where } from "firebase/firestore";
 
 const messagesCollection = collection(db, "messages");
-const messagesQuery = query(messagesCollection, orderBy("createdAt", "desc"));
 
-export default function useChat() {
-    const { user, isLogin } = useAuth();
+const conversationsCollection = collection(db, "conversations");
+const conversationsQuery = query(conversationsCollection, orderBy("createdAt", "desc"));
+
+export default function useChat () {
+    const { user } = useAuth();
+    const { uid: userId, displayName: userName, photoURL: userPhotoURL } = user.value;
+    const conversations = ref([]);
     const messages = ref([]);
-    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-        messages.value = snapshot.docs
-            .map((doc) => ({ id: doc.id, ...doc.data() }))
-            .reverse();
-    });
+    const receiver = ref(null);
+    const activeConversationId = ref(null);
 
-    onUnmounted(unsubscribe);
 
-    const sendMessage = async (text) => {
-        if (!isLogin) return;
-        await addDoc(messagesCollection, {
-            userName: user.value.displayName,
-            userId: user.value.uid,
-            text: text,
-            userPhotoURL: user.value.photoURL,
-            createdAt: serverTimestamp(),
+    const getConversationMessages = (conversationId) => {
+        const conversationMessagesQuery = query(
+            messagesCollection,
+            orderBy("createdAt", "asc"),
+            where("conversationId", "==", conversationId)
+        );
+        const unsubscribeConversationMessages = onSnapshot(conversationMessagesQuery, (querySnapshot) => {
+            messages.value = querySnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+            })).reverse();
         });
+        onUnmounted(unsubscribeConversationMessages);
     };
 
-    return { messages, sendMessage };
+    const unsubscribeConversations = onSnapshot(conversationsQuery, (querySnapshot) => {
+        conversations.value = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+        }));
+    });
+
+    onUnmounted(unsubscribeConversations);
+
+    const sendMessage = async (text, conversationId) => {
+        if (!user.value) return;
+
+        if (!conversationId) {
+            const newConversationId = await createConversation();
+            conversationId = newConversationId;
+        }
+        await addDoc(messagesCollection, {
+            userName,
+            userId,
+            userPhotoURL,
+            text,
+            createdAt: serverTimestamp(),
+            conversationId,
+        });
+
+        // push message to conversation messages
+        getConversationMessages(conversationId);
+    };
+
+    const createConversation = async () => {
+        const member1 = {
+            userName,
+            userId,
+            userPhotoURL,
+        };
+        const conversation = await addDoc(conversationsCollection, {
+            member1,
+            member2: receiver.value,
+            createdAt: serverTimestamp(),
+        });
+        return conversation.id;
+    };
+
+    const setActiveConversationId = (id) => {
+        activeConversationId.value = id;
+        getConversationMessages(id);
+    };
+
+    const setReceiver = (receiverData) => {
+        receiver.value = receiverData;
+    };
+
+    return { sendMessage, conversations, createConversation, messages, activeConversationId, setActiveConversationId, receiver, setReceiver };
 }

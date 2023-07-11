@@ -1,13 +1,14 @@
 <template>
   <div class="chat-widget h-full">
     <header class="flex items-center gap-2 border-b border-gray-400 pb-3">
-      <avatar />
-      <h5>John Doe</h5>
+      <avatar :src="receiver.userPhotoURL" />
+      <h5>
+        {{ receiver.userName }}
+      </h5>
     </header>
-
     <main
       ref="messagesWrapper"
-      class="h-[calc(100%-9rem)] my-4 overflow-y-auto"
+      class="h-[calc(100%-8.5rem)] my-4 overflow-y-auto"
     >
       <message
         v-for="message in messages"
@@ -46,7 +47,19 @@ import Message from "@/components/Message.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMessageText, mdiSend } from "@mdi/js";
 import useChat from "@/compositions/useChat";
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, defineProps } from "vue";
+
+const props = defineProps({
+  activeConversationId: {
+    type: String,
+    default: null,
+  },
+  receiver: {
+    type: Object,
+    default: null,
+  },
+});
+
 const { messages, sendMessage } = useChat();
 const messageText = ref("");
 const messageIcon = mdiMessageText;
@@ -56,7 +69,7 @@ const messagesWrapper = ref(null);
 
 const send = () => {
   if (!messageText.value) return;
-  sendMessage(messageText.value);
+  sendMessage(messageText.value, props?.activeConversationId);
   messageText.value = null;
 };
 
