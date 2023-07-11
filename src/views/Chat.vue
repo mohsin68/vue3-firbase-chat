@@ -19,7 +19,10 @@
               :key="conversation.id"
               :contact="conversation.contact"
               :active="conversation.id == activeConversationId"
-              @click="setActiveConversationId(conversation.id)"
+              @click="
+                setActiveConversationId(conversation.id);
+                setReceiver(conversation.contact);
+              "
             />
           </div>
 
@@ -42,6 +45,11 @@
           v-if="activeConversationId || receiver"
           :conversationId="activeConversationId"
           :receiver="receiver"
+          @send-message="
+            (message, conversationId) =>
+              sendMessage(message, activeConversationId)
+          "
+          :messages="messages"
         />
         <h4
           v-else
@@ -70,6 +78,8 @@ const {
   setActiveConversationId,
   receiver,
   setReceiver,
+  sendMessage,
+  messages,
 } = useChat();
 const search = ref("");
 const searchIcon = mdiMagnify;

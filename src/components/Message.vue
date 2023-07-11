@@ -1,6 +1,6 @@
 <template>
   <div
-    class="message flex gap-2 mb-2"
+    class="message flex gap-2 mb-4"
     :class="sender ? 'flex-row-reverse' : 'flex-row'"
   >
     <div class="message__avatar">

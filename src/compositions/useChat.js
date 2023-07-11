@@ -20,8 +20,8 @@ export default function useChat () {
     const getConversationMessages = (conversationId) => {
         const conversationMessagesQuery = query(
             messagesCollection,
-            orderBy("createdAt", "asc"),
-            where("conversationId", "==", conversationId)
+            orderBy("createdAt", "desc"),
+            where("conversationId", "==", conversationId),
         );
         const unsubscribeConversationMessages = onSnapshot(conversationMessagesQuery, (querySnapshot) => {
             messages.value = querySnapshot.docs.map((doc) => ({
@@ -29,7 +29,6 @@ export default function useChat () {
                 id: doc.id,
             })).reverse();
         });
-        onUnmounted(unsubscribeConversationMessages);
     };
 
     const unsubscribeConversations = onSnapshot(conversationsQuery, (querySnapshot) => {
@@ -47,6 +46,8 @@ export default function useChat () {
         if (!conversationId) {
             const newConversationId = await createConversation();
             conversationId = newConversationId;
+            activeConversationId.value = newConversationId;
+            getConversationMessages(conversationId);
         }
         await addDoc(messagesCollection, {
             userName,

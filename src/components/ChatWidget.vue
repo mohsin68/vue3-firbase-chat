@@ -46,10 +46,13 @@ import Avatar from "@/components/Avatar.vue";
 import Message from "@/components/Message.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiMessageText, mdiSend } from "@mdi/js";
-import useChat from "@/compositions/useChat";
-import { ref, watch, nextTick, defineProps } from "vue";
+import { ref, watch, nextTick, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
+  messages: {
+    type: Array,
+    default: [],
+  },
   activeConversationId: {
     type: String,
     default: null,
@@ -59,8 +62,8 @@ const props = defineProps({
     default: null,
   },
 });
+const emit = defineEmits(["sendMessage"]);
 
-const { messages, sendMessage } = useChat();
 const messageText = ref("");
 const messageIcon = mdiMessageText;
 const sendIcon = mdiSend;
@@ -69,13 +72,14 @@ const messagesWrapper = ref(null);
 
 const send = () => {
   if (!messageText.value) return;
-  sendMessage(messageText.value, props?.activeConversationId);
+  emit("sendMessage", messageText.value, props.activeConversationId);
   messageText.value = null;
 };
 
 watch(
-  messages,
+  () => props.messages,
   () => {
+    console.log(props);
     nextTick(() => {
       messagesWrapper.value.scrollTop = messagesWrapper.value.scrollHeight;
     });
