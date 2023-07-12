@@ -90,6 +90,7 @@ export default function useChat () {
 
     const setReceiver = (receiverData) => {
         receiver.value = receiverData;
+        messages.value = [];
     };
 
     return { sendMessage, conversations, createConversation, messages, activeConversationId, setActiveConversationId, receiver, setReceiver };
