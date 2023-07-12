@@ -20,8 +20,8 @@
               :contact="conversation.contact"
               :active="conversation.id == activeConversationId"
               @click="
-                setActiveConversationId(conversation.id);
                 setReceiver(conversation.contact);
+                setActiveConversationId(conversation.id);
               "
             />
           </div>
