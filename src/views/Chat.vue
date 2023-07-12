@@ -26,11 +26,11 @@
             />
           </div>
 
-          <div class="contacts">
+          <div class="contacts" v-if="filteredContacts.length">
             <span class="text-primary"> contacts </span>
 
             <contact-card
-              v-for="contact in contacts"
+              v-for="contact in filteredContacts"
               :key="contact.userId"
               :contact="contact"
               @click="setReceiver(contact)"
@@ -46,8 +46,7 @@
           :conversationId="activeConversationId"
           :receiver="receiver"
           @send-message="
-            (message, conversationId) =>
-              sendMessage(message, activeConversationId)
+            (message) => sendMessage(message, activeConversationId)
           "
           :messages="messages"
         />
@@ -75,28 +74,33 @@ const { contacts } = useContacts();
 const {
   conversations,
   activeConversationId,
-  setActiveConversationId,
   receiver,
+  messages,
+  setActiveConversationId,
   setReceiver,
   sendMessage,
-  messages,
 } = useChat();
+
 const search = ref("");
 const searchIcon = mdiMagnify;
+const currentUserId = JSON.parse(localStorage.getItem("chatAppUser")).uid;
 
 const convs = computed(() => {
   return conversations.value.map((conv) => {
     const membres = [conv.member1, conv.member2];
     console.log(membres);
-    const contact = membres.find(
-      (member) =>
-        member.userId != JSON.parse(localStorage.getItem("chatAppUser")).uid
-    );
-    console.log(contact);
+    const contact = membres.find((member) => member.userId != currentUserId);
     return {
       ...conv,
       contact,
     };
+  });
+});
+
+const filteredContacts = computed(() => {
+  return contacts.filter((contact) => {
+    const convsIds = convs.value.map((conv) => conv.contact.userId);
+    return !convsIds.includes(contact.userId);
   });
 });
 </script>
