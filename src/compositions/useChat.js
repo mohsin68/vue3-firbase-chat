@@ -1,12 +1,11 @@
 import { db } from "@/firebase";
 import useAuth from "./useAuth";
 import { ref, onUnmounted } from "vue";
-import { collection, addDoc, serverTimestamp, orderBy, query, onSnapshot, where } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, orderBy, query, onSnapshot, where, or } from "firebase/firestore";
 
 const messagesCollection = collection(db, "messages");
 
 const conversationsCollection = collection(db, "conversations");
-const conversationsQuery = query(conversationsCollection, orderBy("createdAt", "desc"));
 
 export default function useChat () {
     const { user } = useAuth();
@@ -30,6 +29,14 @@ export default function useChat () {
             })).reverse();
         });
     };
+
+    const conversationsQuery = query(conversationsCollection, orderBy("createdAt", "desc"),
+        or(
+            where("member1.userId", "==", userId),
+            where("member2.userId", "==", userId),
+        )
+    );
+
 
     const unsubscribeConversations = onSnapshot(conversationsQuery, (querySnapshot) => {
         conversations.value = querySnapshot.docs.map((doc) => ({
