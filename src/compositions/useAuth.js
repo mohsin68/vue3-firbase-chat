@@ -1,12 +1,11 @@
-import router from '@/router';
-import { auth, provider, db } from '../firebase';
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { ref, computed, onUnmounted } from 'vue';
-import { collection, addDoc, query } from 'firebase/firestore';
-import useContacts from './useContacts';
+import router from "@/router";
+import { auth, provider, db } from "../firebase";
+import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import { ref, computed } from "vue";
+import { collection, addDoc, query } from "firebase/firestore";
+import useContacts from "./useContacts";
 
-
-const LOCAL_STORAGE_KEY = 'chatAppUser';
+const LOCAL_STORAGE_KEY = "chatAppUser";
 const users = collection(db, "users");
 const usersQuery = query(users);
 
@@ -14,7 +13,7 @@ export default () => {
   const user = ref(null);
   const { allUsers } = useContacts();
 
-  const unsubscribe = onAuthStateChanged(auth, (_user) => {
+  onAuthStateChanged(auth, (_user) => {
     user.value = _user;
     if (_user) {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(_user));
@@ -22,24 +21,26 @@ export default () => {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
   });
-  onUnmounted(unsubscribe);
 
   const isLogin = computed(() => user.value !== null);
 
   const signIn = async () => {
-
     try {
       await signInWithPopup(auth, provider);
-      router.push('/chat');
-      if (allUsers.some(user => user.userId === user.value.uid)) return;
+      if (user.value) {
+        router.push("/chat");
+        const currentUser = JSON.parse(
+          localStorage.getItem(LOCAL_STORAGE_KEY)
+        ).uid;
+        if (allUsers.some((user) => user.userId === currentUser)) return;
 
-      // add user to firestore
-      await addDoc(usersQuery, {
-        userName: user.value.displayName,
-        userId: user.value.uid,
-        userPhotoURL: user.value.photoURL,
-      });
-
+        // add user to firestore
+        addDoc(usersQuery, {
+          userName: user.value.displayName,
+          userId: user.value.uid,
+          userPhotoURL: user.value.photoURL,
+        });
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -48,7 +49,7 @@ export default () => {
   const signOutUser = async () => {
     try {
       await signOut(auth);
-      router.push('/');
+      router.push("/");
     } catch (error) {
       console.log(error.message);
     }
@@ -59,7 +60,7 @@ export default () => {
     if (userData) {
       const parsedData = JSON.parse(userData);
       user.value = parsedData;
-      router.push('/chat');
+      router.push("/chat");
     }
   };
 
@@ -72,7 +73,6 @@ export default () => {
       signOutUser();
     }, timeLeft);
   };
-
 
   autoLogin();
   autoLogout();
