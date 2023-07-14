@@ -1,6 +1,6 @@
 <template>
   <div class="chat-page h-full flex justify-center items-center">
-    <div class="chat-wrapper flex w-2/3 h-[600px]">
+    <div class="chat-wrapper flex w-full md:w-10/12 lg:w-2/3 h-[600px] mx-4">
       <div
         class="chat-sidebar w-1/3 bg-dark bg-opacity-80 backdrop-blur-sm rounded-l-xl overflow-hidden"
       >
