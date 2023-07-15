@@ -2,7 +2,12 @@
   <div class="chat-page h-full flex justify-center items-center">
     <div class="chat-wrapper flex w-full md:w-10/12 lg:w-2/3 h-[600px] mx-4">
       <div
-        class="chat-sidebar w-1/3 bg-dark bg-opacity-80 backdrop-blur-sm rounded-l-xl overflow-hidden"
+        class="chat-sidebar bg-dark bg-opacity-80 backdrop-blur-sm overflow-hidden"
+        :class="
+          activeConversationId || receiver
+            ? 'w-0'
+            : 'w-full rounded-xl lg:rounded-none lg:rounded-l-lg lg:w-1/3'
+        "
       >
         <div class="search-wrapper p-4">
           <text-input v-model="search" placeholder="search">
@@ -39,23 +44,30 @@
         </div>
       </div>
       <div
-        class="chat-main grow-[2] bg-dark bg-opacity-60 backdrop-blur-md rounded-r-xl relative px-8 py-4"
+        class="chat-main bg-dark bg-opacity-60 backdrop-blur-md overflow-hidden"
+        :class="
+          activeConversationId || receiver
+            ? 'w-full rounded-xl lg:rounded-none lg:rounded-r-xl'
+            : 'w-0 lg:grow-[2]'
+        "
       >
-        <chat-widget
-          v-if="activeConversationId || receiver"
-          :conversationId="activeConversationId"
-          :receiver="receiver"
-          @send-message="
-            (message) => sendMessage(message, activeConversationId)
-          "
-          :messages="messages"
-        />
-        <h4
-          v-else
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
-        >
-          Please select a contact or conversation to start a chat
-        </h4>
+        <div class="relative h-full px-8 py-4">
+          <chat-widget
+            v-if="activeConversationId || receiver"
+            :conversationId="activeConversationId"
+            :receiver="receiver"
+            @send-message="
+              (message) => sendMessage(message, activeConversationId)
+            "
+            :messages="messages"
+          />
+          <h4
+            v-else
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
+          >
+            Please select a contact or conversation to start a chat
+          </h4>
+        </div>
       </div>
     </div>
   </div>
