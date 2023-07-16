@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-widget h-full">
+  <div class="chat-widget h-full px-8 py-4">
     <header class="flex items-center gap-2 border-b border-gray-400 pb-3">
       <avatar :src="receiver.userPhotoURL" />
       <h5>
