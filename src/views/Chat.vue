@@ -51,6 +51,10 @@
             (message) => sendMessage(message, activeConversationId)
           "
           :messages="messages"
+          @back="
+            setActiveConversationId(null);
+            setReceiver(null);
+          "
         />
         <h4
           v-else

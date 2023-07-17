@@ -1,6 +1,13 @@
 <template>
   <div class="chat-widget h-full px-8 py-4">
     <header class="flex items-center gap-2 border-b border-gray-400 pb-3">
+      <button
+        class="text-white rounded-full p-1 font-sm lg:hidden"
+        @click="$emit('back', null)"
+      >
+        <svg-icon type="mdi" :path="backIcon" size="18"></svg-icon>
+      </button>
+
       <avatar :src="receiver.userPhotoURL" />
       <h5>
         {{ receiver.userName }}
@@ -45,7 +52,7 @@ import TextInput from "@/components/TextInput.vue";
 import Avatar from "@/components/Avatar.vue";
 import Message from "@/components/Message.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiMessageText, mdiSend } from "@mdi/js";
+import { mdiMessageText, mdiSend, mdiArrowLeft } from "@mdi/js";
 import { ref, watch, nextTick, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -67,6 +74,7 @@ const emit = defineEmits(["sendMessage"]);
 const messageText = ref("");
 const messageIcon = mdiMessageText;
 const sendIcon = mdiSend;
+const backIcon = mdiArrowLeft;
 const currentUser = JSON.parse(localStorage.getItem("chatAppUser")).uid;
 const messagesWrapper = ref(null);
 
