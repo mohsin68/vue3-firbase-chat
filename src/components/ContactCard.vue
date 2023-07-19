@@ -15,11 +15,7 @@
         <div
           class="contact-card__info__last-message text-sm text-gray-400 w-40 truncate"
         >
-          <!-- {{ contact.lastMessage }} -->
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis
-          laborum minus assumenda? Modi asperiores voluptate fugiat, aperiam
-          atque quidem veritatis illo sed, voluptas reiciendis excepturi maiores
-          tempore distinctio, illum dignissimos!
+          {{ contact.lastMessage }}
         </div>
       </div>
       <div class="contact-card__info__last-message-time text-xs text-primary">

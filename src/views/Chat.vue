@@ -18,7 +18,10 @@
             <contact-card
               v-for="conversation in convs"
               :key="conversation.id"
-              :contact="conversation.contact"
+              :contact="{
+                ...conversation.contact,
+                lastMessage: conversation.lastMessage,
+              }"
               :active="conversation.id == activeConversationId"
               @click="
                 setReceiver(conversation.contact);
