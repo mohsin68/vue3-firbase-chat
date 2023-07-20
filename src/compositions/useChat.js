@@ -18,7 +18,7 @@ const messagesCollection = collection(db, "messages");
 
 const conversationsCollection = collection(db, "conversations");
 
-export default function useChat () {
+export default function useChat() {
   const { user } = useAuth();
   const currentUser = computed(() => user.value);
   const {
@@ -38,16 +38,6 @@ export default function useChat () {
       where("conversationId", "==", conversationId)
     );
 
-    const setLastMessage = async (conversationId, message) => {
-      const conversationRef = doc(
-        conversationsCollection,
-        conversationId
-      );
-      await updateDoc(conversationRef, {
-        lastMessage: message,
-      });
-    };
-
     const unsubscribeConversationMessages = onSnapshot(
       conversationMessagesQuery,
       (querySnapshot) => {
@@ -59,6 +49,13 @@ export default function useChat () {
           .reverse();
       }
     );
+  };
+
+  const setLastMessage = async (conversationId, message) => {
+    const conversationRef = doc(conversationsCollection, conversationId);
+    await updateDoc(conversationRef, {
+      lastMessage: message,
+    });
   };
 
   const conversationsQuery = query(
@@ -82,7 +79,6 @@ export default function useChat () {
 
   onUnmounted(unsubscribeConversations);
 
-
   const sendMessage = async (text, conversationId) => {
     if (!user.value) return;
 
@@ -90,15 +86,8 @@ export default function useChat () {
       const newConversationId = await createConversation();
       conversationId = newConversationId;
       activeConversationId.value = newConversationId;
-      const conversationRef = doc(
-        conversationsCollection,
-        conversationId
-      );
-      await updateDoc(conversationRef, {
-        lastMessage: text,
-      });
+      setLastMessage(conversationId, text);
       getConversationMessages(conversationId);
-
     }
     await addDoc(messagesCollection, {
       userName,
@@ -108,14 +97,9 @@ export default function useChat () {
       createdAt: serverTimestamp(),
       conversationId,
     });
-    const conversationRef = doc(
-      conversationsCollection,
-      conversationId
-    );
-    await updateDoc(conversationRef, {
-      lastMessage: text,
-    });
+
     // push message to conversation messages
+    setLastMessage(conversationId, text);
     getConversationMessages(conversationId);
   };
 
