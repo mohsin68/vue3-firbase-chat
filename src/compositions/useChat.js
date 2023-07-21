@@ -55,6 +55,7 @@ export default function useChat() {
     const conversationRef = doc(conversationsCollection, conversationId);
     await updateDoc(conversationRef, {
       lastMessage: message,
+      updatedAt: serverTimestamp(),
     });
   };
 
