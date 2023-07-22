@@ -18,8 +18,11 @@
           {{ contact.lastMessage }}
         </div>
       </div>
-      <div class="contact-card__info__last-message-time text-xs text-primary">
-        <!-- {{ contact.lastMessageTime }} -->
+      <div
+        v-if="contact.updatedAt"
+        class="contact-card__info__last-message-time text-xs text-primary"
+      >
+        {{ formatTimestamp(contact.updatedAt) }}
       </div>
     </div>
   </div>
@@ -28,12 +31,30 @@
 <script setup>
 import Avatar from "@/components/Avatar.vue";
 import { defineProps } from "vue";
+import moment from "moment";
 const props = defineProps({
   contact: {
     type: Object,
     default: () => ({}),
   },
 });
+
+const formatTimestamp = (timestamp) => {
+  const date = moment.unix(timestamp.seconds);
+  const today = moment().startOf("day");
+  const yesterday = moment().subtract(1, "day").startOf("day");
+
+  if (date.isSame(today, "d")) {
+    // It's today, return the time with AM/PM
+    return date.format("h:mm A");
+  } else if (date.isSame(yesterday, "d")) {
+    // It's yesterday
+    return "Yesterday";
+  } else {
+    // Return the date formatted as 15/7/2023
+    return date.format("D/M/YY");
+  }
+};
 </script>
 
 <style>

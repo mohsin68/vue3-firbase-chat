@@ -21,6 +21,7 @@
               :contact="{
                 ...conversation.contact,
                 lastMessage: conversation.lastMessage,
+                updatedAt: conversation.updatedAt,
               }"
               :active="conversation.id == activeConversationId"
               @click="
