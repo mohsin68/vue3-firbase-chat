@@ -31,6 +31,12 @@ export default function useChat() {
   const receiver = ref(null);
   const activeConversationId = ref(null);
 
+  const orderedConversations = computed(() =>
+    conversations.value.sort((a, b) => {
+      return b?.updatedAt?.seconds - a?.updatedAt?.seconds;
+    })
+  );
+
   const getConversationMessages = (conversationId) => {
     const conversationMessagesQuery = query(
       messagesCollection,
@@ -137,5 +143,6 @@ export default function useChat() {
     setActiveConversationId,
     receiver,
     setReceiver,
+    orderedConversations,
   };
 }

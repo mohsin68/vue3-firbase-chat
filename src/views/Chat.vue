@@ -89,6 +89,7 @@ const {
   setActiveConversationId,
   setReceiver,
   sendMessage,
+  orderedConversations,
 } = useChat();
 
 const search = ref("");
@@ -96,9 +97,8 @@ const searchIcon = mdiMagnify;
 const currentUserId = JSON.parse(localStorage.getItem("chatAppUser")).uid;
 
 const convs = computed(() => {
-  return conversations.value.map((conv) => {
+  return orderedConversations.value.map((conv) => {
     const membres = [conv.member1, conv.member2];
-    console.log(membres);
     const contact = membres.find((member) => member.userId != currentUserId);
     return {
       ...conv,
