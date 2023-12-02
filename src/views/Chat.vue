@@ -82,7 +82,6 @@ import useContacts from "@/compositions/useContacts";
 import useChat from "@/compositions/useChat";
 const { contacts } = useContacts();
 const {
-  conversations,
   activeConversationId,
   receiver,
   messages,
