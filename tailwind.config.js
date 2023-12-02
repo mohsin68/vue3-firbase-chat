@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       darkMode: [ 'class', '[data-theme="dark"]' ],
       colors: {
-        primary: "#fff017",
+        primary: "var(--primary-color)",
         dark: "#121212",
         light: "#fff",
         muted: "#f9f9f9",
